@@ -1,18 +1,9 @@
 <!DOCTYPE html>
 <html>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-    }
-    html, body {
-      height: 100%;
-      overflow: hidden;
-    }
-    canvas {
-      image-rendering: pixelated;
-      display: block;
-    }
+    * { margin: 0; padding: 0; }
+    html, body { height: 100%; overflow: hidden; }
+    canvas { image-rendering: pixelated; display: block; }
   </style>
   <body>
     <canvas></canvas>
@@ -78,13 +69,22 @@
             const yPos = row * TILE;
             if (tile === "#") {
               ctx.drawImage(dirt, xPos, yPos, TILE, TILE);
+              if (row > 0 && level[row - 1][col] !== "#") {
+                ctx.drawImage(grass, xPos, yPos, TILE, TILE); // grass on top
+              }
             } else if (tile === "L") {
               ctx.drawImage(lava, xPos, yPos, TILE, TILE);
-            } else if (tile === ".") {
-              // empty tile, skip
             }
           }
         }
+      }
+
+      function isSolid(x, y) {
+        const level = levels[currentLevel];
+        const row = Math.floor(y / TILE);
+        const col = Math.floor(x / TILE);
+        if (!level[row] || !level[row][col]) return false;
+        return level[row][col] === "#";
       }
 
       function isLava(x, y) {
@@ -107,14 +107,18 @@
 
       function gameLoop() {
         x += dx;
-        dy += gravity;
-        y += dy;
 
-        // Floor collision
-        if (y >= canvas.height - TILE * 2) {
-          y = canvas.height - TILE * 2;
+        // Gravity & floor check
+        let below1 = isSolid(x + 10, y + TILE);
+        let below2 = isSolid(x + TILE - 10, y + TILE);
+
+        if (below1 || below2) {
+          y = Math.floor((y + TILE) / TILE) * TILE - TILE;
           dy = 0;
           jumping = false;
+        } else {
+          dy += gravity;
+          y += dy;
         }
 
         // Lava check
@@ -123,7 +127,7 @@
           resetPlayer();
         }
 
-        // Level complete check
+        // End of level check
         if (reachedEnd()) {
           currentLevel++;
           if (currentLevel >= levels.length) {
