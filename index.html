@@ -1,9 +1,17 @@
 <!DOCTYPE html>
 <html>
   <style>
-    * { margin: 0; padding: 0; }
-    html, body { height: 100%; overflow: hidden; }
-    canvas { image-rendering: pixelated; display: block; }
+    * {
+      margin: 0;
+      padding: 0;
+    }
+    html, body {
+      height: 100%;
+      overflow: hidden;
+    }
+    canvas {
+      image-rendering: pixelated;
+    }
   </style>
   <body>
     <canvas></canvas>
@@ -14,7 +22,6 @@
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
 
-      const TILE = 64;
       const player = new Image();
       const dirt = new Image();
       const lava = new Image();
@@ -25,95 +32,17 @@
       grass.src = "grass.png";
 
       let x = 0;
-      let y = canvas.height - TILE * 3;
+      let y = canvas.height - 192;
       let dx = 0;
       let dy = 0;
       let gravity = 0.5;
       let jumping = false;
 
-      const levels = [
-        [
-          "........................",
-          "........................",
-          "........................",
-          "....................###.",
-          "....................###.",
-          "..........#####......###",
-          "....................###.",
-          "....................###.",
-          "########################",
-          "########################"
-        ],
-        [
-          "........................",
-          "........................",
-          "..................###...",
-          ".............###........",
-          "........................",
-          "..........###...........",
-          "........................",
-          "....###................L",
-          "########################",
-          "########################"
-        ]
-      ];
-
-      let currentLevel = 0;
-
-      function drawLevel() {
-        const level = levels[currentLevel];
-        for (let row = 0; row < level.length; row++) {
-          for (let col = 0; col < level[row].length; col++) {
-            const tile = level[row][col];
-            const xPos = col * TILE;
-            const yPos = row * TILE;
-            if (tile === "#") {
-              ctx.drawImage(dirt, xPos, yPos, TILE, TILE);
-              if (row > 0 && level[row - 1][col] !== "#") {
-                ctx.drawImage(grass, xPos, yPos, TILE, TILE); // grass on top
-              }
-            } else if (tile === "L") {
-              ctx.drawImage(lava, xPos, yPos, TILE, TILE);
-            }
-          }
-        }
-      }
-
-      function isSolid(x, y) {
-        const level = levels[currentLevel];
-        const row = Math.floor(y / TILE);
-        const col = Math.floor(x / TILE);
-        if (!level[row] || !level[row][col]) return false;
-        return level[row][col] === "#";
-      }
-
-      function isLava(x, y) {
-        const level = levels[currentLevel];
-        const row = Math.floor(y / TILE);
-        const col = Math.floor(x / TILE);
-        return level[row] && level[row][col] === "L";
-      }
-
-      function reachedEnd() {
-        return x + TILE > canvas.width;
-      }
-
-      function resetPlayer() {
-        x = 0;
-        y = canvas.height - TILE * 3;
-        dx = 0;
-        dy = 0;
-      }
-
       function gameLoop() {
         x += dx;
 
-        // Gravity & floor check
-        let below1 = isSolid(x + 10, y + TILE);
-        let below2 = isSolid(x + TILE - 10, y + TILE);
-
-        if (below1 || below2) {
-          y = Math.floor((y + TILE) / TILE) * TILE - TILE;
+        if (y >= canvas.height - 192) {
+          y = canvas.height - 192;
           dy = 0;
           jumping = false;
         } else {
@@ -121,48 +50,39 @@
           y += dy;
         }
 
-        // Lava check
-        if (isLava(x + TILE / 2, y + TILE)) {
-          alert("You died in lava!");
-          resetPlayer();
-        }
-
-        // End of level check
-        if (reachedEnd()) {
-          currentLevel++;
-          if (currentLevel >= levels.length) {
-            alert("You finished all levels!");
-            currentLevel = 0;
-          }
-          resetPlayer();
-        }
-
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.imageSmoothingEnabled = false;
-
-        drawLevel();
-        ctx.drawImage(player, x, y, TILE, TILE);
-
+        ctx.clearRect(0,0,canvas.width,canvas.height)
+        ctx.drawImage(player, x, y, 64, 64);
+        for (let i = 0; i < canvas.width; i += 64) {
+          ctx.drawImage(dirt, i, canvas.height - 64, 64, 64);
+        }
+        for (let i = 0; i < canvas.width; i += 64) {
+          ctx.drawImage(grass, i, canvas.height - 128, 64, 64);
+        }
+        ctx.drawImage(lava,canvas.width - 384,canvas.height - 128,128,64)
         requestAnimationFrame(gameLoop);
       }
 
+      requestAnimationFrame(gameLoop);
+
       function setd(key) {
-        if (key.key === "ArrowLeft") dx = -6;
-        if (key.key === "ArrowRight") dx = 6;
-        if ((key.key === "ArrowUp" || key.key === " ") && !jumping) {
+        if (key.key == "ArrowLeft") {dx = -6};
+        if (key.key == "ArrowRight") {dx = 6};
+
+        if ((key.key == "ArrowUp" || key.key == " ") && !jumping) {
           dy = -10;
           jumping = true;
-        }
+        };
       }
 
       function stop(key) {
-        if (key.key === "ArrowLeft" || key.key === "ArrowRight") dx = 0;
+        if (key.key == "ArrowLeft" || key.key == "ArrowRight") {
+          dx = 0
+        }
       }
 
-      document.addEventListener("keydown", setd);
-      document.addEventListener("keyup", stop);
-
-      requestAnimationFrame(gameLoop);
+      document.addEventListener("keydown",setd)
+      document.addEventListener("keyup",stop)
     </script>
   </body>
 </html>
