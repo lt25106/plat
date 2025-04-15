@@ -43,12 +43,17 @@
         dy += gravity;
         y += dy;
 
-        if (y >= canvas.height - 192 && (x < canvas.width - 384 || x > canvas.width - 320)) {
+        if (y >= canvas.height - 192) {
           y = canvas.height - 192;
           dy = 0;
           jumping = false;
+
+          // Check lava zone
+          if (x > canvas.width - 384 && x < canvas.width - 320) {
+            location.reload(); // 🔥 lava death
+          }
         } else {
-          jumping = true; // ← critical fix
+          jumping = true;
         }
 
         ctx.imageSmoothingEnabled = false;
