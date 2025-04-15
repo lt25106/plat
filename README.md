@@ -1,1 +1,1 @@
-read the desc
+read the about
