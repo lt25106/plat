@@ -82,10 +82,10 @@
           y = canvas.height - 192;
           dy = 0;
           jumping = false;
-
-          // Check lava zone
-          if (x > canvas.width - 384 && x < canvas.width - 320) {
-            location.reload(); // 🔥 lava death
+          let dead = false;
+          if (!dead && x > canvas.width - 384 && x < canvas.width - 320) {
+            dead = true;
+            location.reload();
           }
         } else {
           jumping = true;
