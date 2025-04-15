@@ -72,6 +72,7 @@
       let dy = 0;
       let gravity = 0.5;
       let jumping = false;
+      let dead = false;
 
       function gameLoop() {
         x += dx;
@@ -82,7 +83,6 @@
           y = canvas.height - 192;
           dy = 0;
           jumping = false;
-          let dead = false;
           if (!dead && x > canvas.width - 384 && x < canvas.width - 320) {
             dead = true;
             location.reload();
