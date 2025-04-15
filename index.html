@@ -40,26 +40,29 @@
 
       function gameLoop() {
         x += dx;
+        dy += gravity;
+        y += dy;
 
         if (y >= canvas.height - 192) {
           y = canvas.height - 192;
           dy = 0;
           jumping = false;
         } else {
-          dy += gravity;
-          y += dy;
+          jumping = true; // ← critical fix
         }
 
         ctx.imageSmoothingEnabled = false;
-        ctx.clearRect(0,0,canvas.width,canvas.height)
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
         ctx.drawImage(player, x, y, 64, 64);
+
         for (let i = 0; i < canvas.width; i += 64) {
           ctx.drawImage(dirt, i, canvas.height - 64, 64, 64);
-        }
-        for (let i = 0; i < canvas.width; i += 64) {
           ctx.drawImage(grass, i, canvas.height - 128, 64, 64);
         }
-        ctx.drawImage(lava,canvas.width - 384,canvas.height - 128,128,64)
+
+        ctx.drawImage(lava, canvas.width - 384, canvas.height - 128, 128, 64);
+
         requestAnimationFrame(gameLoop);
       }
 
