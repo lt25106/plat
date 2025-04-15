@@ -24,8 +24,8 @@
     button {
       font-size: 4rem;
       font-family: serif;
-      padding-left: 1rem;
-      padding-right: 1rem;
+      padding-left: 2rem;
+      padding-right: 2rem;
       border-radius: 8rem;
       border: 0;
       background-image: linear-gradient(to top right, #00AD57, #4dffa6);
@@ -46,8 +46,10 @@
   </style>
   <body>
     <p>
-      <br>Do not play this game in class.<br><br>
-      <button onclick="document.querySelector('p').style.display = 'none'">I understand</button>
+      <br>Do not play this game in class.<br>
+      For more terms, click <a href="games terms.pdf">here</a>.
+      <br><br>
+      <button onclick="document.querySelector('p').style.display = 'none'">I understand & agree to the <a href="games terms.pdf">terms</a></button>
     </p>
     <canvas></canvas>
     <script>
